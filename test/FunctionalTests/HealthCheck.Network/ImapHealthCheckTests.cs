@@ -12,7 +12,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace FunctionalTests.BeatPulse.Network
+namespace FunctionalTests.HealthChecks.Network
 {
     [Collection("execution")]
     public class imap_healthcheck_should
@@ -20,9 +20,9 @@ namespace FunctionalTests.BeatPulse.Network
         private readonly ExecutionFixture _fixture;
 
         //Host and login account to fast switch tests against different server
-        private string _host = "localhost";
-        private string _validAccount = "admin@healthchecks.com";
-        private string _validPassword = "beatpulse";
+        private const string _host = "localhost";
+        private const string _validAccount = "admin@healthchecks.com";
+        private const string _validPassword = "beatpulse";
 
         public imap_healthcheck_should(ExecutionFixture fixture)
         {

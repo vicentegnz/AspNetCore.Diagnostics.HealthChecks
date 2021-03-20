@@ -12,7 +12,6 @@ namespace Microsoft.Extensions.DependencyInjection
         const string MEMORY_NAME = "privatememory";
         const string WORKINGSET_NAME = "workingset";
         const string VIRTUALMEMORYSIZE_NAME = "virtualmemory";
-
         /// <summary>
         /// Add a health check for disk storage.
         /// </summary>
@@ -31,17 +30,16 @@ namespace Microsoft.Extensions.DependencyInjection
             setup?.Invoke(options);
 
             return builder.Add(new HealthCheckRegistration(
-              name ?? DISK_NAME,
-              sp => new DiskStorageHealthCheck(options),
-              failureStatus,
-              tags));
+                name ?? DISK_NAME,
+                sp => new DiskStorageHealthCheck(options),
+                failureStatus,
+                tags));
         }
-
         /// <summary>
         /// Add a health check for process private memory.
         /// </summary>
         /// <param name="builder">The <see cref="IHealthChecksBuilder"/>.</param>
-        /// <param name="maximumMemoryBytes">The maximun private memory bytes on the process.</param>
+        /// <param name="maximumMemoryBytes">The maximum private memory bytes on the process.</param>
         /// <param name="name">The health check name. Optional. If <c>null</c> the type name 'privatememory' will be used for the name.</param>
         /// <param name="failureStatus">
         /// The <see cref="HealthStatus"/> that should be reported when the health check fails. Optional. If <c>null</c> then
@@ -52,17 +50,16 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IHealthChecksBuilder AddPrivateMemoryHealthCheck(this IHealthChecksBuilder builder, long maximumMemoryBytes, string name = default, HealthStatus? failureStatus = default, IEnumerable<string> tags = default)
         {
             return builder.Add(new HealthCheckRegistration(
-             name ?? MEMORY_NAME,
-             sp => new MaximumValueHealthCheck<long>(maximumMemoryBytes, () => Process.GetCurrentProcess().PrivateMemorySize64),
-             failureStatus,
-             tags));
+                name ?? MEMORY_NAME,
+                sp => new MaximumValueHealthCheck<long>(maximumMemoryBytes, () => Process.GetCurrentProcess().PrivateMemorySize64),
+                failureStatus,
+                tags));
         }
-
         /// <summary>
         /// Add a health check for process working set.
         /// </summary>
         /// <param name="builder">The <see cref="IHealthChecksBuilder"/>.</param>
-        /// <param name="maximumMemoryBytes">The maximun working set memory bytes on the process.</param>
+        /// <param name="maximumMemoryBytes">The maximum working set memory bytes on the process.</param>
         /// <param name="name">The health check name. Optional. If <c>null</c> the type name 'workingset' will be used for the name.</param>
         /// <param name="failureStatus">
         /// The <see cref="HealthStatus"/> that should be reported when the health check fails. Optional. If <c>null</c> then
@@ -73,17 +70,16 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IHealthChecksBuilder AddWorkingSetHealthCheck(this IHealthChecksBuilder builder, long maximumMemoryBytes, string name = default, HealthStatus? failureStatus = default, IEnumerable<string> tags = default)
         {
             return builder.Add(new HealthCheckRegistration(
-             name ?? WORKINGSET_NAME,
-             sp => new MaximumValueHealthCheck<long>(maximumMemoryBytes, () => Process.GetCurrentProcess().WorkingSet64),
-             failureStatus,
-             tags));
+                name ?? WORKINGSET_NAME,
+                sp => new MaximumValueHealthCheck<long>(maximumMemoryBytes, () => Process.GetCurrentProcess().WorkingSet64),
+                failureStatus,
+                tags));
         }
-
         /// <summary>
         /// Add a health check for process virtual memory.
         /// </summary>
         /// <param name="builder">The <see cref="IHealthChecksBuilder"/>.</param>
-        /// <param name="maximumMemoryBytes">The maximun virtual memory bytes on the process.</param>
+        /// <param name="maximumMemoryBytes">The maximum virtual memory bytes on the process.</param>
         /// <param name="name">The health check name. Optional. If <c>null</c> the type name 'virtualmemory' will be used for the name.</param>
         /// <param name="failureStatus">
         /// The <see cref="HealthStatus"/> that should be reported when the health check fails. Optional. If <c>null</c> then
@@ -94,10 +90,10 @@ namespace Microsoft.Extensions.DependencyInjection
         public static IHealthChecksBuilder AddVirtualMemorySizeHealthCheck(this IHealthChecksBuilder builder, long maximumMemoryBytes, string name = default, HealthStatus? failureStatus = default, IEnumerable<string> tags = default)
         {
             return builder.Add(new HealthCheckRegistration(
-            name ?? VIRTUALMEMORYSIZE_NAME,
-            sp => new MaximumValueHealthCheck<long>(maximumMemoryBytes, () => Process.GetCurrentProcess().VirtualMemorySize64),
-            failureStatus,
-            tags));
+                name ?? VIRTUALMEMORYSIZE_NAME,
+                sp => new MaximumValueHealthCheck<long>(maximumMemoryBytes, () => Process.GetCurrentProcess().VirtualMemorySize64),
+                failureStatus,
+                tags));
         }
     }
 }

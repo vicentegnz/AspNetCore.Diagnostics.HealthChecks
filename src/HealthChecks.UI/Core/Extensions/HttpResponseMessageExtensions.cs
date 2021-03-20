@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace System.Net.Http
@@ -8,10 +7,23 @@ namespace System.Net.Http
     {
         public static async Task<TContent> As<TContent>(this HttpResponseMessage response)
         {
-            var content = await response.Content
-                .ReadAsStringAsync();
+            if (response != null)
+            {
+                var body = await response.Content
+                    .ReadAsStringAsync();
 
-            return JsonConvert.DeserializeObject<TContent>(content);
+                if (body != null)
+                {
+                    var content = JsonConvert.DeserializeObject<TContent>(body);
+
+                    if (content != null)
+                    {
+                        return content;
+                    }
+                }
+            }
+
+            throw new InvalidOperationException($"Response is null or message can't be deserialized as {typeof(TContent).FullName}.");
         }
     }
 }

@@ -9,24 +9,24 @@ namespace HealthChecks.System
         : IHealthCheck
         where T : IComparable<T>
     {
-        private readonly T maximunValue;
-        private readonly Func<T> currentValueFunc;
-        public MaximumValueHealthCheck(T maximunValue, Func<T> currentValueFunc)
+        private readonly T _maximumValue;
+        private readonly Func<T> _currentValueFunc;
+        public MaximumValueHealthCheck(T maximumValue, Func<T> currentValueFunc)
         {
-            this.maximunValue = maximunValue;
-            this.currentValueFunc = currentValueFunc;
+            _maximumValue = maximumValue;
+            _currentValueFunc = currentValueFunc ?? throw new ArgumentNullException(nameof(currentValueFunc));
         }
         public Task<HealthCheckResult> CheckHealthAsync(HealthCheckContext context, CancellationToken cancellationToken = default)
         {
-            var currentValue = currentValueFunc();
+            var currentValue = _currentValueFunc();
 
-            if (currentValue.CompareTo(maximunValue) <= 0)
+            if (currentValue.CompareTo(_maximumValue) <= 0)
             {
                 return Task.FromResult(HealthCheckResult.Healthy());
             }
 
             return Task.FromResult(
-                new HealthCheckResult(context.Registration.FailureStatus, description: $"Maximun={maximunValue}, Current={currentValue}"));
+                new HealthCheckResult(context.Registration.FailureStatus, description: $"Maximum={_maximumValue}, Current={currentValue}"));
         }
     }
 }

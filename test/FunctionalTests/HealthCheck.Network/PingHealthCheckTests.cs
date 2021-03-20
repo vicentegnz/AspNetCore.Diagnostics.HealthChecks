@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using Xunit;
 
 
-namespace FunctionalTests.BeatPulse.Network
+namespace FunctionalTests.HealthChecks.Network
 {
     [Collection("execution")]
     public class ping_healthcheck_should
@@ -20,7 +20,7 @@ namespace FunctionalTests.BeatPulse.Network
 
         public ping_healthcheck_should(ExecutionFixture fixture)
         {
-            _fixture = fixture ?? throw new ArgumentNullException(nameof(fixture)); ;
+            _fixture = fixture ?? throw new ArgumentNullException(nameof(fixture));
         }
 
         [Fact]

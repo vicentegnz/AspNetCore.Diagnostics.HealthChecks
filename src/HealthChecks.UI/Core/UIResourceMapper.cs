@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace HealthChecks.UI.Core
@@ -18,11 +19,12 @@ namespace HealthChecks.UI.Core
         public void Map(IApplicationBuilder app, Options options)
         {
             var resources = _reader.UIResources;
-            var UIMain = resources.GetMainUI(options);
+            var ui = resources.GetMainUI(options);
+            var styleSheets = ui.GetCustomStylesheets(options);
 
             foreach (var resource in resources)
             {
-                app.Map($"{Keys.HEALTHCHECKSUI_RESOURCES_PATH}/{resource.FileName}", appBuilder =>
+                app.Map($"{options.ResourcesPath}/{resource.FileName}", appBuilder =>
                 {
                     appBuilder.Run(async context =>
                     {
@@ -34,14 +36,39 @@ namespace HealthChecks.UI.Core
 
             app.Map($"{options.UIPath}", appBuilder =>
             {
-                appBuilder.Run(context =>
+                appBuilder.Run(async context =>
                 {
-                    context.Response.Headers.Add("Cache-Control", "no-cache, no-store");
-                    context.Response.ContentType = UIMain.ContentType;
-                    context.Response.WriteAsync(UIMain.Content);
-                    return Task.CompletedTask;
+                    context.Response.OnStarting(() =>
+                    {
+                        // prevent user add previous middleware in the pipeline
+                        // and set the cache-control 
+
+                        if (!context.Response.Headers.ContainsKey("Cache-Control"))
+                        {
+                            context.Response.Headers.Add("Cache-Control", "no-cache, no-store");
+                        }
+
+                        return Task.CompletedTask;
+                    });
+
+                    context.Response.ContentType = ui.ContentType;
+                    await context.Response.WriteAsync(ui.Content);
                 });
             });
+
+
+            foreach (var item in styleSheets)
+            {
+                app.Map(item.ResourcePath, appBuilder =>
+                {
+                    appBuilder.Run(async context =>
+                    {
+                        context.Response.ContentType = "text/css";
+                        await context.Response.Body.WriteAsync(item.Content, 0, item.Content.Length);
+                    });
+                });
+            }
+            
         }
     }
 }
